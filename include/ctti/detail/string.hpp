@@ -7,6 +7,7 @@
 
 #include <ostream>
 #include <array>
+#include <string>
 
 #include "hash.hpp"
 #include "array.hpp"
@@ -39,9 +40,19 @@ namespace ctti
                 return str_.data();
             }
 
+            std::string to_string() const
+            {
+                return {c_str(), length()};
+            }
+
             constexpr std::size_t length() const
             {
                 return length_;
+            }
+
+            constexpr std::size_t size() const
+            {
+                return length();
             }
 
             constexpr char operator[](std::size_t i) const
