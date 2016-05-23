@@ -1,7 +1,7 @@
 #ifndef CTTI_DETAIL_HASH_HPP
 #define CTTI_DETAIL_HASH_HPP
 
-#include <cstdint>
+#include <cstddef>
 
 namespace ctti
 {
@@ -9,7 +9,7 @@ namespace ctti
     {
         // From https://github.com/foonathan/string_id. As usually, thanks Jonathan.
 
-        using hash_t = std::uint64_t;
+        using hash_t = std::size_t;
 
         constexpr hash_t fnv_basis = 14695981039346656037ull;
         constexpr hash_t fnv_prime = 109951162821ull;

@@ -5,7 +5,6 @@
 #ifndef CTTI_HASH_HPP
 #define CTTI_HASH_HPP
 
-#include <functional>
 #include "detail/hash.hpp"
 #include "detail/pretty_function.hpp"
 #include "detail/string.hpp"
@@ -102,10 +101,10 @@ namespace ctti
     }
 
     // Inline to prevent ODR violation
-    inline ctti::unnamed_type_id_t id_from_name(const std::string& typeName)
+    /*inline ctti::unnamed_type_id_t id_from_name(const std::string& typeName)
     {
         return detail::sid_hash(typeName.size(), typeName.data());
-    }
+    }*/
 
     namespace detail
     {
@@ -149,6 +148,28 @@ namespace ctti
 #endif
         }
     }
+    
+    namespace detail {
+        template <typename T>
+        struct remove_cv {
+              using type = T;
+        };
+        
+        template<typename T>
+        struct remove_cv<const T> {
+              using type = T;
+        };
+        
+        template<typename T>
+        struct remove_cv<volatile T> {
+              using type = T;
+        };
+        
+        template<typename T>
+        struct remove_cv<const volatile T> {
+              using type = T;
+        };
+    }
 
     /**
      * Returns type information at compile-time for a value
@@ -158,7 +179,7 @@ namespace ctti
     template<typename T>
     constexpr type_id_t type_id(T&&)
     {
-        return detail::type_id<typename std::decay<T>::type>();
+        return detail::type_id<typename detail::remove_cv<T>::type>();
     }
 
     /**
@@ -178,7 +199,7 @@ namespace ctti
     template<typename T>
     constexpr unnamed_type_id_t unnamed_type_id(T&&)
     {
-        return detail::unnamed_type_id<typename std::decay<T>::type>();
+        return detail::unnamed_type_id<typename detail::remove_cv<T>::type>();
     }
 
     /**
@@ -193,7 +214,7 @@ namespace ctti
     //assert commented out, GCC 5.2.0 ICE here.
     //static_assert(type_id<void>() == type_id<void>(), "ctti::type_id_t instances must be constant expressions");
 }
-
+/*
 namespace std
 {
     template<>
@@ -215,6 +236,6 @@ namespace std
             return std::size_t(id.hash());
         }
     };
-}
+}*/
 
 #endif //CTTI_HASH_HPP

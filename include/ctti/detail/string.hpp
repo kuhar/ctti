@@ -19,12 +19,16 @@ namespace ctti
 #endif
         struct string
         {
+            #define CTTI_FORWARD(x) static_cast<decltype(x)&&>(x)
+            
             template<typename Head, typename... Tail>
 			explicit constexpr string(Head&& head, Tail&&... tail) :
-				str_{std::forward<Head>(head), std::forward<Tail>(tail)..., '\0'},
+				str_{CTTI_FORWARD(head), CTTI_FORWARD(tail)..., '\0'},
 				length_{sizeof...(Tail)}, // Without null-terminator
 				hash_{ sid_hash(length_, str_.data()) }
 			{}
+			
+			#undef CTTI_FORWARD
 
             constexpr hash_t hash() const
             {
@@ -70,7 +74,7 @@ namespace ctti
 		namespace
 		{
 			template<std::size_t... Is>
-			constexpr string make_string(const char* str, std::index_sequence<Is...>)
+			constexpr string make_string(const char* str, index_sequence<Is...>)
 			{
 				return string(str[Is]..., '\0');
 			}
@@ -81,7 +85,7 @@ namespace ctti
         {
             static_assert(end -  begin <= max_string_length, "Fatal error: Range exceeds maximum string length");
 
-            return make_string( str + begin, std::make_index_sequence<end - begin - 1>{} );
+            return make_string( str + begin, make_index_sequence<end - begin - 1>{} );
         }
 
         template<std::size_t N>
