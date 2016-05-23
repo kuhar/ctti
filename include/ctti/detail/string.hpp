@@ -5,10 +5,6 @@
 #ifndef CTTI_STRING_HPP
 #define CTTI_STRING_HPP
 
-#include <ostream>
-#include <array>
-#include <string>
-
 #include "hash.hpp"
 #include "array.hpp"
 
@@ -25,7 +21,7 @@ namespace ctti
         {
             template<typename Head, typename... Tail>
 			explicit constexpr string(Head&& head, Tail&&... tail) :
-				str_{std::forward<Head>(head), std::forward<Tail>(tail)...},
+				str_{std::forward<Head>(head), std::forward<Tail>(tail)..., '\0'},
 				length_{sizeof...(Tail)}, // Without null-terminator
 				hash_{ sid_hash(length_, str_.data()) }
 			{}
@@ -38,11 +34,6 @@ namespace ctti
             constexpr const char* c_str() const
             {
                 return str_.data();
-            }
-
-            std::string to_string() const
-            {
-                return {c_str(), length()};
             }
 
             constexpr std::size_t length() const
@@ -63,12 +54,12 @@ namespace ctti
             template <std::size_t Begin, std::size_t End>
 			constexpr string substr() const;
 
-            friend std::ostream& operator<<(std::ostream& os, const string& str)
+            /*friend std::ostream& operator<<(std::ostream& os, const string& str)
             {
                 for (std::size_t i = 0u; i != str.length_; ++i)
                     os << str[i];
                 return os;
-            }
+            }*/
 
         private:
 			ctti::detail::array<char, max_string_length> str_;

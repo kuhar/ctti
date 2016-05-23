@@ -37,7 +37,6 @@ namespace ctti
             return name_.hash();
         }
 
-        // note: name().c_str() isn't null-terminated properly!
         constexpr const detail::string& name() const
         {
             return name_;
