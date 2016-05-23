@@ -89,13 +89,13 @@ namespace ctti
     using type_index = unnamed_type_id_t; // To mimic std::type_index when using maps
 
 
-    template<std::size_t N>
+    template<detail::size_type N>
     constexpr ctti::unnamed_type_id_t id_from_name(const char (&typeName)[N])
     {
         return detail::sid_hash(N - 1, typeName);
     }
 
-    constexpr ctti::unnamed_type_id_t id_from_name(const char* typeName, std::size_t length)
+    constexpr ctti::unnamed_type_id_t id_from_name(const char* typeName, detail::size_type length)
     {
         return detail::sid_hash(length, typeName);
     }
@@ -220,20 +220,20 @@ namespace std
     template<>
     struct hash<ctti::type_id_t>
     {
-        constexpr std::size_t operator()(const ctti::type_id_t& id) const
+        constexpr detail::size_type operator()(const ctti::type_id_t& id) const
         {
             // quiet warning about possible loss of data
-            return std::size_t(id.hash());
+            return detail::size_type(id.hash());
         }
     };
 
     template<>
     struct hash<ctti::unnamed_type_id_t>
     {
-        constexpr std::size_t operator()(const ctti::unnamed_type_id_t& id) const
+        constexpr detail::size_type operator()(const ctti::unnamed_type_id_t& id) const
         {
             // quiet warning about possible loss of data
-            return std::size_t(id.hash());
+            return detail::size_type(id.hash());
         }
     };
 }*/
